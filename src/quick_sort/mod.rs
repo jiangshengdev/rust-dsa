@@ -50,7 +50,7 @@ where
     // (between the smaller and larger elements)
     i += 1;
     a.swap(i as usize, hi as usize);
-    i
+    i // the pivot index
 }
 
 #[cfg(test)]
@@ -75,7 +75,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let mut a = [1, 3, 5, 7, 9, 2, 4, 6, 8, 10];
+        let mut a = [3, 7, 8, 5, 2, 1, 9, 5, 4];
 
         println!("{:?}", a);
         sort(&mut a);
