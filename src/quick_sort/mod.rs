@@ -1,10 +1,11 @@
 //! This is adapted from https://en.wikipedia.org/wiki/Quicksort
 
-pub fn sort<T>(a: &mut [T])
+pub fn sort<T>(a: &mut [T]) -> &mut [T]
 where
     T: Copy + Ord,
 {
     quick_sort(a, 0, a.len() as isize - 1);
+    a
 }
 
 /// Sorts a (portion of an) array,
@@ -60,7 +61,7 @@ mod tests {
 
     use super::*;
 
-    fn is_orderly<T>(a: &[T])
+    fn check_orderly<T>(a: &[T])
     where
         T: Ord,
     {
@@ -74,37 +75,86 @@ mod tests {
     }
 
     #[test]
-    fn it_works() {
-        let mut a = [3, 7, 8, 5, 2, 1, 9, 5, 4];
+    fn test_basic() {
+        let mut data = [5, 9, 3];
+        let sorted = [3, 5, 9];
+        sort(&mut data);
+        check_orderly(&data);
+        assert_eq!(data, sorted);
+    }
 
-        println!("{:?}", a);
-        sort(&mut a);
-        println!("{:?}", a);
-
-        is_orderly(&a);
+    #[test]
+    fn test_normal() {
+        let mut data = [2, 4, 6, 2, 1, 8, 10, 3, 5, 7, 0, 9, 1];
+        let sorted = [0, 1, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        sort(&mut data);
+        check_orderly(&data);
+        assert_eq!(data, sorted);
     }
 
     #[test]
     fn test_empty() {
-        let mut a: [i32; 0] = [];
-
-        println!("{:?}", a);
-        sort(&mut a);
-        println!("{:?}", a);
-
-        is_orderly(&a);
+        let mut data: [i32; 0] = [];
+        let sorted: [i32; 0] = [];
+        sort(&mut data);
+        check_orderly(&data);
+        assert_eq!(data, sorted);
     }
 
     #[test]
-    fn test_random() {
+    fn test_reverse() {
+        let mut data = [9, 8, 7, 6, 5, 4, 3, 2, 1];
+        let sorted = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        sort(&mut data);
+        check_orderly(&data);
+        assert_eq!(data, sorted);
+    }
+
+    #[test]
+    fn test_negative() {
+        let mut data = [-10, 1, 2, 3, 3, -20, 5, 43];
+        let sorted = [-20, -10, 1, 2, 3, 3, 5, 43];
+        sort(&mut data);
+        check_orderly(&data);
+        assert_eq!(data, sorted);
+    }
+
+    #[test]
+    fn test_batch() {
+        check_orderly(sort(&mut [5]));
+        check_orderly(sort(&mut [3, 2]));
+        check_orderly(sort(&mut [2, 3]));
+        check_orderly(sort(&mut [5, 1, 2]));
+        check_orderly(sort(&mut [1, 100, 2, 3]));
+        check_orderly(sort(&mut [1, 3, 5, 7, 9, 2, 4, 6, 8, 0]));
+        check_orderly(sort(&mut [2, 4, 6, 2, 1, 8, 10, 3, 5, 7, 0, 9, 1]));
+        check_orderly(sort(&mut [
+            9, 11, 9, 9, 9, 9, 11, 2, 3, 4, 11, 9, 0, 0, 0, 0,
+        ]));
+        check_orderly(sort(&mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
+        check_orderly(sort(&mut [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]));
+        check_orderly(sort(&mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 1, 2]));
+        check_orderly(sort(&mut [5, 4, 3, 2, 1, 5, 4, 3, 2, 1, 5, 4, 3, 2, 1]));
+    }
+
+    #[test]
+    fn test_random_small() {
         let mut rng = rand::thread_rng();
         let range = Uniform::new_inclusive(1, 20);
-        let mut v = (&mut rng).sample_iter(range).take(10).collect::<Vec<i32>>();
+        let mut data = (&mut rng).sample_iter(range).take(10).collect::<Vec<i32>>();
+        sort(&mut data);
+        check_orderly(&data);
+    }
 
-        println!("{:?}", v);
-        sort(&mut v);
-        println!("{:?}", v);
-
-        is_orderly(&v);
+    #[test]
+    fn test_random_large() {
+        let mut rng = rand::thread_rng();
+        let range = Uniform::new_inclusive(-50000, 50000);
+        let mut data = (&mut rng)
+            .sample_iter(range)
+            .take(50000)
+            .collect::<Vec<i32>>();
+        sort(&mut data);
+        check_orderly(&data);
     }
 }
