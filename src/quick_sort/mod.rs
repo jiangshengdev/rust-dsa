@@ -1,4 +1,10 @@
-//! This is adapted from https://en.wikipedia.org/wiki/Quicksort
+//! This is adapted from
+//! https://en.wikipedia.org/wiki/Quicksort
+//!
+//! Test case is derived from
+//! https://github.com/rust-lang/rust/blob/master/library/alloc/src/collections/binary_heap/tests.rs
+//!
+//! https://github.com/rust-lang/rust/blob/60bd3f96779dbe6bd206dae09395e9af7d580552/library/alloc/src/collections/binary_heap/tests.rs
 
 pub fn sort<T>(a: &mut [T]) -> &mut [T]
 where
