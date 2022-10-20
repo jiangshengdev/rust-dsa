@@ -165,7 +165,6 @@ impl<T> Iterator for IntoIter<T> {
 mod tests {
     use super::*;
 
-
     #[test]
     fn test_into_iter_collect() {
         let data = vec![-5, -9, -3];
