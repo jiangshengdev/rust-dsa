@@ -16,7 +16,7 @@ pub struct BinaryHeap<T> {
 
 impl<T> BinaryHeap<T>
 where
-    T: Ord + Copy,
+    T: Copy + Ord,
 {
     fn new() -> Self {
         BinaryHeap { data: Vec::new() }
@@ -26,7 +26,7 @@ where
         let heap = &mut self.data;
         let index = heap.len();
         heap.push(item);
-        self.siftUp(index);
+        self.sift_up(index);
     }
 
     pub fn peek(&self) -> Option<&T> {
@@ -37,31 +37,66 @@ where
         let heap = &mut self.data;
         let size = heap.len();
 
-        if size == 0 {
-            return None;
+        if size < 2 {
+            return heap.pop();
         }
 
-        let first = heap.first().unwrap();
-        let last = heap.last().unwrap();
+        heap.swap(0, size - 1);
+        let item = heap.pop();
+        self.sift_down(0);
+        item
+    }
 
-        if *last != *first {
-            heap.swap(0, size - 1);
-            let ret = heap.pop();
-            self.siftDown(0);
-            ret
-        } else {
-            heap.pop()
+    fn sift_up(&mut self, i: usize) {
+        let mut index = i;
+        let heap = &mut self.data;
+        let item = *heap.get(index).unwrap();
+
+        while index > 0 {
+            let parent_index = (index - 1) / 2;
+            let parent = *heap.get(parent_index).unwrap();
+            if parent > item {
+                heap.swap(index, parent_index);
+                index = parent_index;
+            } else {
+                return;
+            }
         }
     }
 
-    fn siftUp(&mut self, i: usize) {}
+    fn sift_down(&mut self, i: usize) {
+        let heap = &mut self.data;
+        let mut index = i;
+        let item = *heap.get(index).unwrap();
+        let size = heap.len();
+        let half_size = size / 2;
+        while index < half_size {
+            let left_index = index * 2 + 1;
+            let right_index = left_index + 1;
+            let left = heap.get(left_index);
+            let right = heap.get(right_index);
 
-    fn siftDown(&mut self, i: usize) {}
+            if *left.unwrap() < item {
+                if right_index < size && *right.unwrap() < *left.unwrap() {
+                    heap.swap(index, right_index);
+                    index = right_index;
+                } else {
+                    heap.swap(index, left_index);
+                    index = left_index;
+                }
+            } else if right_index < size && *right.unwrap() < item {
+                heap.swap(index, right_index);
+                index = right_index;
+            } else {
+                return;
+            }
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::binary_heap::BinaryHeap;
+    use super::*;
 
     #[test]
     fn test_basic() {
@@ -70,6 +105,8 @@ mod tests {
         heap.push(2);
         heap.push(3);
         assert_eq!(heap.pop(), Some(1));
+        assert_eq!(heap.pop(), Some(2));
+        assert_eq!(heap.pop(), Some(3));
         println!("{:?}", heap);
     }
 }
