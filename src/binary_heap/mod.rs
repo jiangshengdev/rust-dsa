@@ -16,28 +16,10 @@ pub struct BinaryHeap<T> {
     data: Vec<T>,
 }
 
-impl<T> BinaryHeap<T>
-where
-    T: Copy + Ord,
-{
+impl<T: Ord> BinaryHeap<T> {
     /// Creates an empty `BinaryHeap` as a min-heap.
     pub fn new() -> Self {
         BinaryHeap { data: vec![] }
-    }
-
-    /// Converts a `Vec<T>` into a `BinaryHeap<T>`.
-    fn from(vec: Vec<T>) -> Self {
-        let mut heap = BinaryHeap { data: vec };
-        heap.rebuild();
-        heap
-    }
-
-    fn rebuild(&mut self) {
-        let mut index = self.len() / 2;
-        while index > 0 {
-            index -= 1;
-            self.sift_down(index);
-        }
     }
 
     /// Pushes an item onto the binary heap.
@@ -128,22 +110,29 @@ where
             }
         }
     }
+
+    fn rebuild(&mut self) {
+        let mut index = self.len() / 2;
+        while index > 0 {
+            index -= 1;
+            self.sift_down(index);
+        }
+    }
 }
 
+impl<T: Ord> From<Vec<T>> for BinaryHeap<T> {
+    /// Converts a `Vec<T>` into a `BinaryHeap<T>`.
+    fn from(vec: Vec<T>) -> Self {
+        let mut heap = BinaryHeap { data: vec };
+        heap.rebuild();
+        heap
+    }
+}
+
+/// An owning iterator over the elements of a `BinaryHeap`.
 #[derive(Clone)]
 pub struct IntoIter<T> {
     iter: vec::IntoIter<T>,
-}
-
-impl<T> IntoIterator for BinaryHeap<T> {
-    type Item = T;
-    type IntoIter = IntoIter<T>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        IntoIter {
-            iter: self.data.into_iter(),
-        }
-    }
 }
 
 impl<T> Iterator for IntoIter<T> {
@@ -157,6 +146,20 @@ impl<T> Iterator for IntoIter<T> {
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.iter.size_hint()
+    }
+}
+
+impl<T> IntoIterator for BinaryHeap<T> {
+    type Item = T;
+    type IntoIter = IntoIter<T>;
+
+    /// Creates a consuming iterator, that is, one that moves each value out of
+    /// the binary heap in arbitrary order. The binary heap cannot be used
+    /// after calling this.
+    fn into_iter(self) -> Self::IntoIter {
+        IntoIter {
+            iter: self.data.into_iter(),
+        }
     }
 }
 
