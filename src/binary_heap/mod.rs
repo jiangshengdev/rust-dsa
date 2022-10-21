@@ -134,6 +134,7 @@ where
     }
 }
 
+#[derive(Clone)]
 pub struct IntoIter<T> {
     iter: vec::IntoIter<T>,
 }
@@ -152,10 +153,12 @@ impl<T> IntoIterator for BinaryHeap<T> {
 impl<T> Iterator for IntoIter<T> {
     type Item = T;
 
+    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         self.iter.next()
     }
 
+    #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.iter.size_hint()
     }
