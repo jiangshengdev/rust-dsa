@@ -79,10 +79,10 @@ where
         self.len() == 0
     }
 
-    /// Take an element at `pos` and move it down the heap,
-    /// while its children are smaller.
-    fn sift_up(&mut self, i: usize) {
-        let mut index = i;
+    /// Take an element at `pos` and move it up the heap,
+    /// while its parent is larger.
+    fn sift_up(&mut self, pos: usize) {
+        let mut index = pos;
         let heap = &mut self.data;
         let item = *heap.get(index).unwrap();
 
@@ -102,9 +102,9 @@ where
 
     /// Take an element at `pos` and move it down the heap,
     /// while its children are smaller.
-    fn sift_down(&mut self, i: usize) {
+    fn sift_down(&mut self, pos: usize) {
+        let mut index = pos;
         let heap = &mut self.data;
-        let mut index = i;
         let item = *heap.get(index).unwrap();
         let size = heap.len();
         let half_size = size / 2;
