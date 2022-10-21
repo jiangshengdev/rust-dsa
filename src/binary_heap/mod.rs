@@ -33,18 +33,18 @@ where
     }
 
     fn rebuild(&mut self) {
-        let mut n = self.len() / 2;
-        while n > 0 {
-            n -= 1;
-            self.sift_down(n);
+        let mut index = self.len() / 2;
+        while index > 0 {
+            index -= 1;
+            self.sift_down(index);
         }
     }
 
     /// Pushes an item onto the binary heap.
     pub fn push(&mut self, item: T) {
-        let heap = &mut self.data;
-        let index = heap.len();
-        heap.push(item);
+        let items = &mut self.data;
+        let index = items.len();
+        items.push(item);
         self.sift_up(index);
     }
 
@@ -56,15 +56,15 @@ where
     /// Removes the least item from the binary heap and returns it, or `None` if it
     /// is empty.
     pub fn pop(&mut self) -> Option<T> {
-        let heap = &mut self.data;
-        let size = heap.len();
+        let items = &mut self.data;
+        let size = items.len();
 
         if size < 2 {
-            return heap.pop();
+            return items.pop();
         }
 
-        heap.swap(0, size - 1);
-        let item = heap.pop();
+        items.swap(0, size - 1);
+        let item = items.pop();
         self.sift_down(0);
         item
     }
@@ -83,15 +83,15 @@ where
     /// while its parent is larger.
     fn sift_up(&mut self, pos: usize) {
         let mut index = pos;
-        let heap = &mut self.data;
-        let item = *heap.get(index).unwrap();
+        let items = &mut self.data;
+        let item = *items.get(index).unwrap();
 
         while index > 0 {
             let parent_index = (index - 1) / 2;
-            let parent = *heap.get(parent_index).unwrap();
+            let parent = *items.get(parent_index).unwrap();
             if parent > item {
                 // The parent is larger. Swap positions.
-                heap.swap(index, parent_index);
+                items.swap(index, parent_index);
                 index = parent_index;
             } else {
                 // The parent is smaller. Exit.
@@ -104,27 +104,28 @@ where
     /// while its children are smaller.
     fn sift_down(&mut self, pos: usize) {
         let mut index = pos;
-        let heap = &mut self.data;
-        let item = *heap.get(index).unwrap();
-        let size = heap.len();
+        let items = &mut self.data;
+        let item = *items.get(index).unwrap();
+        let size = items.len();
         let half_size = size / 2;
+
         while index < half_size {
             let left_index = index * 2 + 1;
+            let left = items.get(left_index);
             let right_index = left_index + 1;
-            let left = heap.get(left_index);
-            let right = heap.get(right_index);
+            let right = items.get(right_index);
 
             // If the left or right node is smaller, swap with the smaller of those.
             if *left.unwrap() < item {
                 if right_index < size && *right.unwrap() < *left.unwrap() {
-                    heap.swap(index, right_index);
+                    items.swap(index, right_index);
                     index = right_index;
                 } else {
-                    heap.swap(index, left_index);
+                    items.swap(index, left_index);
                     index = left_index;
                 }
             } else if right_index < size && *right.unwrap() < item {
-                heap.swap(index, right_index);
+                items.swap(index, right_index);
                 index = right_index;
             } else {
                 // Neither child is smaller. Exit.
