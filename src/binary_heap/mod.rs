@@ -26,14 +26,14 @@ where
     }
 
     /// Converts a `Vec<T>` into a `BinaryHeap<T>`.
-    pub fn from(vec: Vec<T>) -> Self {
+    fn from(vec: Vec<T>) -> Self {
         let mut heap = BinaryHeap { data: vec };
         heap.rebuild();
         heap
     }
 
     fn rebuild(&mut self) {
-        let mut n = self.data.len() / 2;
+        let mut n = self.len() / 2;
         while n > 0 {
             n -= 1;
             self.sift_down(n);
@@ -80,7 +80,7 @@ where
     }
 
     /// Take an element at `pos` and move it down the heap,
-    /// while its children are Smaller.
+    /// while its children are smaller.
     fn sift_up(&mut self, i: usize) {
         let mut index = i;
         let heap = &mut self.data;
@@ -101,7 +101,7 @@ where
     }
 
     /// Take an element at `pos` and move it down the heap,
-    /// while its children are Smaller.
+    /// while its children are smaller.
     fn sift_down(&mut self, i: usize) {
         let heap = &mut self.data;
         let mut index = i;
