@@ -84,12 +84,10 @@ where
     fn sift_up(&mut self, pos: usize) {
         let mut index = pos;
         let items = &mut self.data;
-        let item = *items.get(index).unwrap();
 
         while index > 0 {
             let parent_index = (index - 1) / 2;
-            let parent = *items.get(parent_index).unwrap();
-            if parent > item {
+            if items[parent_index] > items[index] {
                 // The parent is larger. Swap positions.
                 items.swap(index, parent_index);
                 index = parent_index;
@@ -105,26 +103,23 @@ where
     fn sift_down(&mut self, pos: usize) {
         let mut index = pos;
         let items = &mut self.data;
-        let item = *items.get(index).unwrap();
         let size = items.len();
         let half_size = size / 2;
 
         while index < half_size {
             let left_index = index * 2 + 1;
-            let left = items.get(left_index);
             let right_index = left_index + 1;
-            let right = items.get(right_index);
 
             // If the left or right node is smaller, swap with the smaller of those.
-            if *left.unwrap() < item {
-                if right_index < size && *right.unwrap() < *left.unwrap() {
+            if items[left_index] < items[index] {
+                if right_index < size && items[right_index] < items[left_index] {
                     items.swap(index, right_index);
                     index = right_index;
                 } else {
                     items.swap(index, left_index);
                     index = left_index;
                 }
-            } else if right_index < size && *right.unwrap() < item {
+            } else if right_index < size && items[right_index] < items[index] {
                 items.swap(index, right_index);
                 index = right_index;
             } else {
