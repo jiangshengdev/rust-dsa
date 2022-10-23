@@ -5,12 +5,16 @@
 //! Test case is derived from
 //! https://github.com/rust-lang/rust/blob/60bd3f96779dbe6bd206dae09395e9af7d580552/library/alloc/src/collections/binary_heap/tests.rs
 
+use std::cmp::Ordering;
+
 pub fn sort<T: Ord>(a: &mut [T]) -> &mut [T] {
-    if a.len() <= 1 {
+    let size = a.len();
+
+    if size <= 1 {
         return a;
     }
 
-    quick_sort(a, 0, a.len() - 1);
+    quick_sort(a, 0, size - 1);
     a
 }
 
@@ -52,18 +56,24 @@ fn partition<T: Ord>(a: &mut [T], lo: usize, hi: usize) -> (usize, usize) {
     let mut k: usize = hi - 1;
 
     while j <= k {
-        if a[j] < a[p] {
-            a.swap(i, j);
-            i = i + 1;
-            j = j + 1;
-        } else if a[j] > a[p] {
-            a.swap(j, k);
-            if k == 0 {
-                break;
+        match a[j].cmp(&a[p]) {
+            Ordering::Less => {
+                a.swap(i, j);
+                i += 1;
+                j += 1;
             }
-            k = k - 1;
-        } else {
-            j = j + 1;
+            Ordering::Greater => {
+                a.swap(j, k);
+
+                if k == 0 {
+                    break;
+                }
+
+                k -= 1;
+            }
+            Ordering::Equal => {
+                j += 1;
+            }
         }
     }
 

@@ -69,6 +69,7 @@ impl<T: Ord> BinaryHeap<T> {
 
         while index > 0 {
             let parent_index = (index - 1) / 2;
+
             if items[parent_index] > items[index] {
                 // The parent is larger. Swap positions.
                 items.swap(index, parent_index);
@@ -113,6 +114,7 @@ impl<T: Ord> BinaryHeap<T> {
 
     fn rebuild(&mut self) {
         let mut index = self.len() / 2;
+
         while index > 0 {
             index -= 1;
             self.sift_down(index);
