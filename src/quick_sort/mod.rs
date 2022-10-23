@@ -1,61 +1,74 @@
 //! This is adapted from
 //! https://en.wikipedia.org/wiki/Quicksort
+//! https://en.wikipedia.org/wiki/Dutch_national_flag_problem
 //!
 //! Test case is derived from
 //! https://github.com/rust-lang/rust/blob/60bd3f96779dbe6bd206dae09395e9af7d580552/library/alloc/src/collections/binary_heap/tests.rs
 
-pub fn sort<T>(a: &mut [T]) -> &mut [T]
-where
-    T: Copy + Ord,
-{
-    quick_sort(a, 0, a.len() as isize - 1);
+pub fn sort<T: Ord>(a: &mut [T]) -> &mut [T] {
+    if a.len() <= 1 {
+        return a;
+    }
+
+    quick_sort(a, 0, a.len() - 1);
     a
 }
 
-/// Sorts a (portion of an) array,
-/// divides it into partitions, then sorts those
-pub fn quick_sort<T>(a: &mut [T], lo: isize, hi: isize)
-where
-    T: Copy + Ord,
-{
-    // Ensure indices are in correct order
-    if lo >= hi || lo < 0 {
+fn pivot<T: Ord>(a: &mut [T], lo: usize, hi: usize) {
+    let mid = (lo + hi) / 2;
+
+    if a[mid] < a[lo] {
+        a.swap(lo, mid);
+    }
+
+    if a[hi] < a[lo] {
+        a.swap(lo, hi);
+    }
+
+    if a[mid] < a[hi] {
+        a.swap(mid, hi);
+    }
+}
+
+fn quick_sort<T: Ord>(a: &mut [T], lo: usize, hi: usize) {
+    if lo >= hi {
         return;
     }
 
-    // Partition array and get the pivot index
-    let p = partition(a, lo, hi);
+    pivot(a, lo, hi);
+    let (left, right) = partition(a, lo, hi);
 
-    // Sort the two partitions
-    quick_sort(a, lo, p - 1); // Left side of pivot
-    quick_sort(a, p + 1, hi); // Right side of pivot
+    if left > 1 {
+        quick_sort(a, lo, left - 1);
+    }
+
+    quick_sort(a, right + 1, hi);
 }
 
-/// Divides array into two partitions
-fn partition<T>(a: &mut [T], lo: isize, hi: isize) -> isize
-where
-    T: Copy + Ord,
-{
-    let pivot = a[hi as usize]; // Choose the last element as the pivot
+fn partition<T: Ord>(a: &mut [T], lo: usize, hi: usize) -> (usize, usize) {
+    let p = hi;
+    let mut i: usize = lo;
+    let mut j: usize = lo;
+    let mut k: usize = hi - 1;
 
-    // Temporary pivot index
-    let mut i = lo - 1;
-
-    for j in lo..=hi - 1 {
-        // If the current element is less than or equal to the pivot
-        if a[j as usize] <= pivot {
-            // Move the temporary pivot index forward
-            i += 1;
-            // Swap the current element with the element at the temporary pivot index
-            a.swap(i as usize, j as usize);
+    while j <= k {
+        if a[j] < a[p] {
+            a.swap(i, j);
+            i = i + 1;
+            j = j + 1;
+        } else if a[j] > a[p] {
+            a.swap(j, k);
+            if k == 0 {
+                break;
+            }
+            k = k - 1;
+        } else {
+            j = j + 1;
         }
     }
 
-    // Move the pivot element to the correct pivot position
-    // (between the smaller and larger elements)
-    i += 1;
-    a.swap(i as usize, hi as usize);
-    i // the pivot index
+    a.swap(j, p);
+    (i, j)
 }
 
 #[cfg(test)]
@@ -65,10 +78,7 @@ mod tests {
 
     use super::*;
 
-    fn check_orderly<T>(a: &[T])
-    where
-        T: Ord,
-    {
+    fn check_orderly<T: Ord>(a: &[T]) {
         if a.is_empty() {
             return;
         }
