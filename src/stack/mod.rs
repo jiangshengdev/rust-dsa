@@ -5,7 +5,8 @@ pub struct Stack<T> {
     head: Link<T>,
 }
 
-type Link<T> = Option<Box<Node<T>>>;
+type BoxedNode<T> = Box<Node<T>>;
+type Link<T> = Option<BoxedNode<T>>;
 
 struct Node<T> {
     elem: T,
@@ -18,24 +19,25 @@ impl<T> Stack<T> {
     }
 
     pub fn push(&mut self, elem: T) {
-        let old_head = self.head.take();
+        let old_head: Link<T> = self.head.take();
 
         let node = Node {
             elem,
             next: old_head,
         };
 
-        let heap_node = Box::new(node);
-        let new_head = Some(heap_node);
+        let boxed_node: BoxedNode<T> = Box::new(node);
+        let new_head: Link<T> = Some(boxed_node);
         self.head = new_head;
     }
 
     pub fn pop(&mut self) -> Option<T> {
-        let old_head = self.head.take();
+        let old_head: Link<T> = self.head.take();
 
         match old_head {
             None => None,
-            Some(node) => {
+            Some(boxed_node) => {
+                let node = *boxed_node;
                 self.head = node.next;
                 Some(node.elem)
             }
