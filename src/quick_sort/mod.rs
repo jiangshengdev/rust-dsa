@@ -1,5 +1,6 @@
 //! This is adapted from
 //! https://en.wikipedia.org/wiki/Quicksort
+//!
 //! https://en.wikipedia.org/wiki/Dutch_national_flag_problem
 //!
 //! Test case is derived from
@@ -46,7 +47,7 @@ fn quick_sort<T: Ord>(a: &mut [T], lo: usize, hi: usize) {
     // Choice of pivot
     pivot(a, lo, hi);
 
-    // Partition array and get the pivot index
+    // Partition array and get the pivot indices
     let (left, right) = partition(a, lo, hi);
 
     // Sort the two partitions
@@ -63,7 +64,7 @@ fn partition<T: Ord>(a: &mut [T], lo: usize, hi: usize) -> (usize, usize) {
     // Choose the last element as the pivot
     let p = hi;
 
-    // Temporary pivot index
+    // Temporary pivot indices
     let mut i: usize = lo;
     let mut j: usize = lo;
 
@@ -100,7 +101,7 @@ fn partition<T: Ord>(a: &mut [T], lo: usize, hi: usize) -> (usize, usize) {
     // (between the smaller and larger elements)
     a.swap(j, p);
 
-    // the pivot index
+    // the pivot indices
     (i, j)
 }
 
