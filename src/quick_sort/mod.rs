@@ -124,8 +124,8 @@ mod tests {
 
     #[test]
     fn test_basic() {
-        let mut data = [5, 9, 3];
-        let sorted = [3, 5, 9];
+        let mut data = vec![5, 9, 3];
+        let sorted = vec![3, 5, 9];
         sort(&mut data);
         check_orderly(&data);
         assert_eq!(data, sorted);
@@ -133,8 +133,8 @@ mod tests {
 
     #[test]
     fn test_normal() {
-        let mut data = [2, 4, 6, 2, 1, 8, 10, 3, 5, 7, 0, 9, 1];
-        let sorted = [0, 1, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let mut data = vec![2, 4, 6, 2, 1, 8, 10, 3, 5, 7, 0, 9, 1];
+        let sorted = vec![0, 1, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         sort(&mut data);
         check_orderly(&data);
         assert_eq!(data, sorted);
@@ -142,8 +142,8 @@ mod tests {
 
     #[test]
     fn test_empty() {
-        let mut data: [i32; 0] = [];
-        let sorted: [i32; 0] = [];
+        let mut data: Vec<i32> = vec![];
+        let sorted: Vec<i32> = vec![];
         sort(&mut data);
         check_orderly(&data);
         assert_eq!(data, sorted);
@@ -151,8 +151,8 @@ mod tests {
 
     #[test]
     fn test_reverse() {
-        let mut data = [9, 8, 7, 6, 5, 4, 3, 2, 1];
-        let sorted = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let mut data = vec![9, 8, 7, 6, 5, 4, 3, 2, 1];
+        let sorted = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
         sort(&mut data);
         check_orderly(&data);
         assert_eq!(data, sorted);
@@ -160,8 +160,8 @@ mod tests {
 
     #[test]
     fn test_negative() {
-        let mut data = [-10, 1, 2, 3, 3, -20, 5, 43];
-        let sorted = [-20, -10, 1, 2, 3, 3, 5, 43];
+        let mut data = vec![-10, 1, 2, 3, 3, -20, 5, 43];
+        let sorted = vec![-20, -10, 1, 2, 3, 3, 5, 43];
         sort(&mut data);
         check_orderly(&data);
         assert_eq!(data, sorted);
@@ -169,6 +169,7 @@ mod tests {
 
     #[test]
     fn test_batch() {
+        check_orderly(sort::<i32>(&mut []));
         check_orderly(sort(&mut [5]));
         check_orderly(sort(&mut [3, 2]));
         check_orderly(sort(&mut [2, 3]));
