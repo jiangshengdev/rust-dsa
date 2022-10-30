@@ -65,10 +65,10 @@ fn partition<T: Ord>(a: &mut [T], lo: usize, hi: usize) -> (usize, usize) {
     let p = hi;
 
     // Temporary pivot indices
-    let mut i: usize = lo;
-    let mut j: usize = lo;
+    let mut i = lo;
+    let mut j = lo;
 
-    let mut k: usize = hi - 1;
+    let mut k = hi - 1;
 
     // mid = a[p]
     // [lo, i) < mid
