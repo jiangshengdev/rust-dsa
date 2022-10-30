@@ -40,7 +40,8 @@ impl<T> Stack<T> {
             None => None,
             Some(boxed_node) => {
                 let node = *boxed_node;
-                self.head = node.next;
+                let new_head: Link<T> = node.next;
+                self.head = new_head;
                 let elem = node.elem;
                 Some(elem)
             }
@@ -48,7 +49,7 @@ impl<T> Stack<T> {
     }
 
     pub fn peek(&self) -> Option<&T> {
-        let head = &self.head;
+        let head: &Link<T> = &self.head;
 
         match head {
             None => None,
@@ -60,7 +61,7 @@ impl<T> Stack<T> {
     }
 
     pub fn peek_mut(&mut self) -> Option<&mut T> {
-        let head = &mut self.head;
+        let head: &mut Link<T> = &mut self.head;
 
         match head {
             None => None,
