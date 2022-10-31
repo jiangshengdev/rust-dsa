@@ -47,7 +47,7 @@ impl<T> Stack<T> {
     }
 
     /// Removes the top element from a stack and returns it, or [`None`] if it
-    /// is empty.
+    /// is empty
     pub fn pop(&mut self) -> Option<T> {
         let old_head: Link<T> = self.head.take();
 
@@ -63,7 +63,7 @@ impl<T> Stack<T> {
         }
     }
 
-    /// Returns the top element in the stack, or [`None`] if it is empty.
+    /// Returns the top element in the stack, or [`None`] if it is empty
     pub fn peek(&self) -> Option<&T> {
         let head: &Link<T> = &self.head;
 
@@ -77,7 +77,7 @@ impl<T> Stack<T> {
     }
 
     /// Returns a mutable reference to the top element in the stack, or
-    /// [`None`] if it is empty.
+    /// [`None`] if it is empty
     pub fn peek_mut(&mut self) -> Option<&mut T> {
         let head: &mut Link<T> = &mut self.head;
 
