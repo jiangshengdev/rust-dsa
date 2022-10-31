@@ -3,6 +3,8 @@
 //! This is adapted from
 //!
 //! <https://github.com/rust-unofficial/too-many-lists/blob/bec3afe0c33ff2bdce6895126055e4c5fa0dbd7d/lists/src/second.rs>
+//!
+//! <https://github.com/rust-lang/rust/blob/cb9467515b5a9b15aaa905683c6b4dd9e851056c/library/alloc/src/collections/linked_list.rs>
 
 #[derive(Debug)]
 /// A stack implemented with a linked list.
@@ -33,7 +35,7 @@ impl<T> Stack<T> {
         Stack { head: None }
     }
 
-    /// Pushes an element into the stack.
+    /// Adds an element first in the stack.
     pub fn push(&mut self, elem: T) {
         let old_head: Link<T> = self.head.take();
 
@@ -47,8 +49,8 @@ impl<T> Stack<T> {
         self.head = new_head;
     }
 
-    /// Removes the top element from a stack and returns it, or [`None`] if it
-    /// is empty.
+    /// Removes the first element and returns it, or [`None`] if the stack is
+    /// empty.
     pub fn pop(&mut self) -> Option<T> {
         let old_head: Link<T> = self.head.take();
 
@@ -64,7 +66,7 @@ impl<T> Stack<T> {
         }
     }
 
-    /// Returns the top element in the stack, or [`None`] if it is empty.
+    /// Returns the first element in the stack, or [`None`] if it is empty.
     pub fn peek(&self) -> Option<&T> {
         let head: &Link<T> = &self.head;
 
@@ -77,7 +79,7 @@ impl<T> Stack<T> {
         }
     }
 
-    /// Returns a mutable reference to the top element in the stack, or
+    /// Returns a mutable reference to the first element in the stack, or
     /// [`None`] if it is empty.
     pub fn peek_mut(&mut self) -> Option<&mut T> {
         let head: &mut Link<T> = &mut self.head;
@@ -120,6 +122,7 @@ impl<T> IntoIterator for Stack<T> {
     type Item = T;
     type IntoIter = IntoIter<T>;
 
+    /// Consumes the stack into an iterator yielding elements by value.
     fn into_iter(self) -> Self::IntoIter {
         IntoIter { stack: self }
     }
@@ -133,10 +136,10 @@ mod tests {
     fn test_basics() {
         let mut stack = Stack::new();
 
-        // Check empty list behaves right.
+        // Check empty stack behaves right.
         assert_eq!(stack.pop(), None);
 
-        // Populate list
+        // Populate stack.
         stack.push(1);
         stack.push(2);
         stack.push(3);
