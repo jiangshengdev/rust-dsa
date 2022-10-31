@@ -12,28 +12,29 @@
 
 use std::vec;
 
-/// A priority queue implemented with a binary heap
+/// A priority queue implemented with a binary heap.
 ///
-/// This will be a min-heap
+/// This will be a min-heap.
 #[derive(Debug)]
 pub struct BinaryHeap<T> {
     data: Vec<T>,
 }
 
 impl<T: Ord> Default for BinaryHeap<T> {
-    /// Creates an empty [`BinaryHeap`]
+    /// Creates an empty [`BinaryHeap`].
+    #[inline]
     fn default() -> Self {
         BinaryHeap::new()
     }
 }
 
 impl<T: Ord> BinaryHeap<T> {
-    /// Creates an empty [`BinaryHeap`] as a min-heap
+    /// Creates an empty [`BinaryHeap`] as a min-heap.
     pub fn new() -> Self {
         BinaryHeap { data: vec![] }
     }
 
-    /// Pushes an item onto the binary heap
+    /// Pushes an item onto the binary heap.
     pub fn push(&mut self, item: T) {
         let items = &mut self.data;
         let index = items.len();
@@ -41,13 +42,13 @@ impl<T: Ord> BinaryHeap<T> {
         self.sift_up(index);
     }
 
-    /// Returns the least item in the binary heap, or [`None`] if it is empty
+    /// Returns the least item in the binary heap, or [`None`] if it is empty.
     pub fn peek(&self) -> Option<&T> {
         self.data.get(0)
     }
 
     /// Removes the least item from the binary heap and returns it, or [`None`] if it
-    /// is empty
+    /// is empty.
     pub fn pop(&mut self) -> Option<T> {
         let items = &mut self.data;
         let size = items.len();
@@ -62,18 +63,18 @@ impl<T: Ord> BinaryHeap<T> {
         item
     }
 
-    /// Returns the length of the binary heap
+    /// Returns the length of the binary heap.
     pub fn len(&self) -> usize {
         self.data.len()
     }
 
-    /// Checks if the binary heap is empty
+    /// Checks if the binary heap is empty.
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
 
     /// Take an element at `pos` and move it up the heap,
-    /// while its parent is larger
+    /// while its parent is larger.
     fn sift_up(&mut self, pos: usize) {
         let mut index = pos;
         let items = &mut self.data;
@@ -82,18 +83,18 @@ impl<T: Ord> BinaryHeap<T> {
             let parent_index = (index - 1) / 2;
 
             if items[parent_index] > items[index] {
-                // The parent is larger. Swap positions
+                // The parent is larger. Swap positions.
                 items.swap(index, parent_index);
                 index = parent_index;
             } else {
-                // The parent is smaller. Exit
+                // The parent is smaller. Exit.
                 return;
             }
         }
     }
 
     /// Take an element at `pos` and move it down the heap,
-    /// while its children are smaller
+    /// while its children are smaller.
     fn sift_down(&mut self, pos: usize) {
         let mut index = pos;
         let items = &mut self.data;
@@ -104,7 +105,7 @@ impl<T: Ord> BinaryHeap<T> {
             let left_index = index * 2 + 1;
             let right_index = left_index + 1;
 
-            // If the left or right node is smaller, swap with the smaller of those
+            // If the left or right node is smaller, swap with the smaller of those.
             if items[left_index] < items[index] {
                 if right_index < size && items[right_index] < items[left_index] {
                     items.swap(index, right_index);
@@ -117,7 +118,7 @@ impl<T: Ord> BinaryHeap<T> {
                 items.swap(index, right_index);
                 index = right_index;
             } else {
-                // Neither child is smaller. Exit
+                // Neither child is smaller. Exit.
                 return;
             }
         }
@@ -134,7 +135,7 @@ impl<T: Ord> BinaryHeap<T> {
 }
 
 impl<T: Ord> From<Vec<T>> for BinaryHeap<T> {
-    /// Converts a `Vec<T>` into a `BinaryHeap<T>`
+    /// Converts a [`Vec`] into a [`BinaryHeap`].
     fn from(vec: Vec<T>) -> Self {
         let mut heap = BinaryHeap { data: vec };
         heap.rebuild();
@@ -142,7 +143,7 @@ impl<T: Ord> From<Vec<T>> for BinaryHeap<T> {
     }
 }
 
-/// An owning iterator over the elements of a [`BinaryHeap`]
+/// An owning iterator over the elements of a [`BinaryHeap`].
 #[derive(Clone)]
 pub struct IntoIter<T> {
     iter: vec::IntoIter<T>,
@@ -168,7 +169,7 @@ impl<T> IntoIterator for BinaryHeap<T> {
 
     /// Creates a consuming iterator, that is, one that moves each value out of
     /// the binary heap in arbitrary order. The binary heap cannot be used
-    /// after calling this
+    /// after calling this.
     fn into_iter(self) -> Self::IntoIter {
         IntoIter {
             iter: self.data.into_iter(),

@@ -5,7 +5,7 @@
 //! <https://github.com/rust-unofficial/too-many-lists/blob/bec3afe0c33ff2bdce6895126055e4c5fa0dbd7d/lists/src/second.rs>
 
 #[derive(Debug)]
-/// A stack implemented with a linked list
+/// A stack implemented with a linked list.
 pub struct Stack<T> {
     head: Link<T>,
 }
@@ -20,19 +20,20 @@ struct Node<T> {
 }
 
 impl<T> Default for Stack<T> {
-    /// Creates an empty [`Stack`]
+    /// Creates an empty [`Stack`].
+    #[inline]
     fn default() -> Self {
         Stack::new()
     }
 }
 
 impl<T> Stack<T> {
-    /// Creates an empty [`Stack`]
+    /// Creates an empty [`Stack`].
     pub fn new() -> Self {
         Stack { head: None }
     }
 
-    /// Pushes an element into the stack
+    /// Pushes an element into the stack.
     pub fn push(&mut self, elem: T) {
         let old_head: Link<T> = self.head.take();
 
@@ -47,7 +48,7 @@ impl<T> Stack<T> {
     }
 
     /// Removes the top element from a stack and returns it, or [`None`] if it
-    /// is empty
+    /// is empty.
     pub fn pop(&mut self) -> Option<T> {
         let old_head: Link<T> = self.head.take();
 
@@ -63,7 +64,7 @@ impl<T> Stack<T> {
         }
     }
 
-    /// Returns the top element in the stack, or [`None`] if it is empty
+    /// Returns the top element in the stack, or [`None`] if it is empty.
     pub fn peek(&self) -> Option<&T> {
         let head: &Link<T> = &self.head;
 
@@ -77,7 +78,7 @@ impl<T> Stack<T> {
     }
 
     /// Returns a mutable reference to the top element in the stack, or
-    /// [`None`] if it is empty
+    /// [`None`] if it is empty.
     pub fn peek_mut(&mut self) -> Option<&mut T> {
         let head: &mut Link<T> = &mut self.head;
 
@@ -131,7 +132,7 @@ mod tests {
     fn test_basics() {
         let mut stack = Stack::new();
 
-        // Check empty list behaves right
+        // Check empty list behaves right.
         assert_eq!(stack.pop(), None);
 
         // Populate list
@@ -139,19 +140,19 @@ mod tests {
         stack.push(2);
         stack.push(3);
 
-        // Check normal removal
+        // Check normal removal.
         assert_eq!(stack.pop(), Some(3));
         assert_eq!(stack.pop(), Some(2));
 
-        // Push some more just to make sure nothing's corrupted
+        // Push some more just to make sure nothing's corrupted.
         stack.push(4);
         stack.push(5);
 
-        // Check normal removal
+        // Check normal removal.
         assert_eq!(stack.pop(), Some(5));
         assert_eq!(stack.pop(), Some(4));
 
-        // Check exhaustion
+        // Check exhaustion.
         assert_eq!(stack.pop(), Some(1));
         assert_eq!(stack.pop(), None);
     }

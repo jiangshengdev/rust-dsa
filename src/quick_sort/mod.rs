@@ -12,7 +12,7 @@
 
 use std::cmp::Ordering;
 
-/// Sorting the entire array
+/// Sorting the entire array.
 pub fn sort<T: Ord>(a: &mut [T]) -> &mut [T] {
     let size = a.len();
 
@@ -24,7 +24,7 @@ pub fn sort<T: Ord>(a: &mut [T]) -> &mut [T] {
     a
 }
 
-/// Median-of-three
+/// Median-of-three.
 fn pivot<T: Ord>(a: &mut [T], lo: usize, hi: usize) {
     let mid = lo + (hi - lo) / 2;
 
@@ -41,44 +41,44 @@ fn pivot<T: Ord>(a: &mut [T], lo: usize, hi: usize) {
     }
 }
 
-/// Sorts a (portion of an) array, divides it into partitions, then sorts those
+/// Sorts a (portion of an) array, divides it into partitions, then sorts those.
 fn quick_sort<T: Ord>(a: &mut [T], lo: usize, hi: usize) {
-    // Ensure indices are in correct order
+    // Ensure indices are in correct order.
     if lo >= hi {
         return;
     }
 
-    // Choice of pivot
+    // Choice of pivot.
     pivot(a, lo, hi);
 
-    // Partition array and get the pivot indices
+    // Partition array and get the pivot indices.
     let (left, right) = partition(a, lo, hi);
 
-    // Sort the two partitions
+    // Sort the two partitions.
     if left > 1 {
-        // Left side of pivot
+        // Left side of pivot.
         quick_sort(a, lo, left - 1);
     }
-    // Right side of pivot
+    // Right side of pivot.
     quick_sort(a, right + 1, hi);
 }
 
-/// Divides array into three partitions
+/// Divides array into three partitions.
 fn partition<T: Ord>(a: &mut [T], lo: usize, hi: usize) -> (usize, usize) {
-    // Choose the last element as the pivot
+    // Choose the last element as the pivot.
     let p = hi;
 
-    // Temporary pivot indices
+    // Temporary pivot indices.
     let mut i = lo;
     let mut j = lo;
 
     let mut k = hi - 1;
 
-    // mid = a[p]
-    // [lo, i) < mid
-    // [i, j) == mid
-    // [j, k] not yet sorted
-    // [k + 1, hi - 1] > mid
+    // mid = a[p];
+    // [lo, i) < mid;
+    // [i, j) == mid;
+    // [j, k] not yet sorted;
+    // [k + 1, hi - 1] > mid;
     while j <= k {
         match a[j].cmp(&a[p]) {
             Ordering::Less => {
@@ -102,10 +102,10 @@ fn partition<T: Ord>(a: &mut [T], lo: usize, hi: usize) -> (usize, usize) {
     }
 
     // Move the pivot element to the correct pivot position
-    // (between the smaller and larger elements)
+    // (between the smaller and larger elements).
     a.swap(j, p);
 
-    // the pivot indices
+    // the pivot indices.
     (i, j)
 }
 
