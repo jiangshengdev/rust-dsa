@@ -102,6 +102,7 @@ impl<T> Drop for Stack<T> {
     }
 }
 
+/// An owning iterator over the elements of a [`Stack`].
 pub struct IntoIter<T> {
     stack: Stack<T>,
 }
