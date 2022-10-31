@@ -1,10 +1,14 @@
-//! This is adapted from
-//! https://github.com/facebook/react/blob/65e32e58b6057db1fdfed95a942fad4fc96da191/packages/scheduler/src/SchedulerMinHeap.js
+//! # A Priority Queue Implemented With A Binary Heap
 //!
-//! https://github.com/rust-lang/rust/blob/cb9467515b5a9b15aaa905683c6b4dd9e851056c/library/alloc/src/collections/binary_heap.rs
+//! This is adapted from
+//!
+//! <https://github.com/facebook/react/blob/65e32e58b6057db1fdfed95a942fad4fc96da191/packages/scheduler/src/SchedulerMinHeap.js>
+//!
+//! <https://github.com/rust-lang/rust/blob/cb9467515b5a9b15aaa905683c6b4dd9e851056c/library/alloc/src/collections/binary_heap.rs>
 //!
 //! Test case is derived from
-//! https://github.com/rust-lang/rust/blob/60bd3f96779dbe6bd206dae09395e9af7d580552/library/alloc/src/collections/binary_heap/tests.rs
+//!
+//! <https://github.com/rust-lang/rust/blob/60bd3f96779dbe6bd206dae09395e9af7d580552/library/alloc/src/collections/binary_heap/tests.rs>
 
 use std::vec;
 
@@ -16,8 +20,15 @@ pub struct BinaryHeap<T> {
     data: Vec<T>,
 }
 
+impl<T: Ord> Default for BinaryHeap<T> {
+    /// Creates an empty [`BinaryHeap`]
+    fn default() -> Self {
+        BinaryHeap::new()
+    }
+}
+
 impl<T: Ord> BinaryHeap<T> {
-    /// Creates an empty `BinaryHeap` as a min-heap
+    /// Creates an empty [`BinaryHeap`] as a min-heap
     pub fn new() -> Self {
         BinaryHeap { data: vec![] }
     }
@@ -30,12 +41,12 @@ impl<T: Ord> BinaryHeap<T> {
         self.sift_up(index);
     }
 
-    /// Returns the least item in the binary heap, or `None` if it is empty
+    /// Returns the least item in the binary heap, or [`None`] if it is empty
     pub fn peek(&self) -> Option<&T> {
         self.data.get(0)
     }
 
-    /// Removes the least item from the binary heap and returns it, or `None` if it
+    /// Removes the least item from the binary heap and returns it, or [`None`] if it
     /// is empty
     pub fn pop(&mut self) -> Option<T> {
         let items = &mut self.data;
@@ -131,7 +142,7 @@ impl<T: Ord> From<Vec<T>> for BinaryHeap<T> {
     }
 }
 
-/// An owning iterator over the elements of a `BinaryHeap`
+/// An owning iterator over the elements of a [`BinaryHeap`]
 #[derive(Clone)]
 pub struct IntoIter<T> {
     iter: vec::IntoIter<T>,

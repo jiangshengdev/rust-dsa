@@ -1,10 +1,14 @@
-//! This is adapted from
-//! https://en.wikipedia.org/wiki/Quicksort
+//! # 3-Way QuickSort (Dutch National Flag)
 //!
-//! https://en.wikipedia.org/wiki/Dutch_national_flag_problem
+//! This is adapted from
+//!
+//! <https://en.wikipedia.org/wiki/Quicksort>
+//!
+//! <https://en.wikipedia.org/wiki/Dutch_national_flag_problem>
 //!
 //! Test case is derived from
-//! https://github.com/rust-lang/rust/blob/60bd3f96779dbe6bd206dae09395e9af7d580552/library/alloc/src/collections/binary_heap/tests.rs
+//!
+//! <https://github.com/rust-lang/rust/blob/60bd3f96779dbe6bd206dae09395e9af7d580552/library/alloc/src/collections/binary_heap/tests.rs>
 
 use std::cmp::Ordering;
 

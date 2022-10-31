@@ -1,7 +1,11 @@
+//! # A Stack Implemented With A Linked List
+//!
 //! This is adapted from
-//! https://github.com/rust-unofficial/too-many-lists/blob/bec3afe0c33ff2bdce6895126055e4c5fa0dbd7d/lists/src/second.rs
+//!
+//! <https://github.com/rust-unofficial/too-many-lists/blob/bec3afe0c33ff2bdce6895126055e4c5fa0dbd7d/lists/src/second.rs>
 
 #[derive(Debug)]
+/// A stack implemented with a linked list
 pub struct Stack<T> {
     head: Link<T>,
 }
@@ -15,11 +19,20 @@ struct Node<T> {
     next: Link<T>,
 }
 
+impl<T> Default for Stack<T> {
+    /// Creates an empty [`Stack`]
+    fn default() -> Self {
+        Stack::new()
+    }
+}
+
 impl<T> Stack<T> {
+    /// Creates an empty [`Stack`]
     pub fn new() -> Self {
         Stack { head: None }
     }
 
+    /// Pushes an element into the stack
     pub fn push(&mut self, elem: T) {
         let old_head: Link<T> = self.head.take();
 
@@ -33,6 +46,8 @@ impl<T> Stack<T> {
         self.head = new_head;
     }
 
+    /// Removes the top element from a stack and returns it, or [`None`] if it
+    /// is empty.
     pub fn pop(&mut self) -> Option<T> {
         let old_head: Link<T> = self.head.take();
 
@@ -48,6 +63,7 @@ impl<T> Stack<T> {
         }
     }
 
+    /// Returns the top element in the stack, or [`None`] if it is empty.
     pub fn peek(&self) -> Option<&T> {
         let head: &Link<T> = &self.head;
 
@@ -60,6 +76,8 @@ impl<T> Stack<T> {
         }
     }
 
+    /// Returns a mutable reference to the top element in the stack, or
+    /// [`None`] if it is empty.
     pub fn peek_mut(&mut self) -> Option<&mut T> {
         let head: &mut Link<T> = &mut self.head;
 
