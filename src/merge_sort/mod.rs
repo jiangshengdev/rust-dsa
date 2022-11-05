@@ -1,112 +1,77 @@
-//! # 3-Way QuickSort (Dutch National Flag)
+//! # Merge sort
 //!
 //! This is adapted from
 //!
-//! <https://en.wikipedia.org/wiki/Quicksort>
-//!
-//! <https://en.wikipedia.org/wiki/Dutch_national_flag_problem>
+//! <https://en.wikipedia.org/wiki/Merge_sort>
 //!
 //! Test case is derived from
 //!
 //! <https://github.com/rust-lang/rust/blob/60bd3f96779dbe6bd206dae09395e9af7d580552/library/alloc/src/collections/binary_heap/tests.rs>
 
-use std::cmp::Ordering;
-
-/// Sorting the entire array.
-pub fn sort<T: Ord>(a: &mut [T]) -> &mut [T] {
+/// Sorting the entire array
+fn sort<T: Ord + Copy>(a: &mut [T]) -> &mut [T] {
     let size = a.len();
 
     if size <= 1 {
         return a;
     }
 
-    quick_sort(a, 0, size - 1);
+    let mut b = vec![];
+    b.resize(size, a[0]);
+    merge_sort(a, &mut b, size);
     a
 }
 
-/// Sorts a (portion of an) array, divides it into partitions, then sorts those.
-fn quick_sort<T: Ord>(a: &mut [T], lo: usize, hi: usize) {
-    // Ensure indices are in correct order.
-    if lo >= hi {
+/// Array A[] has the items to sort; array B[] is a work array.
+fn merge_sort<T: Ord + Copy>(a: &mut [T], b: &mut [T], n: usize) {
+    // one time copy of A[] to B[]
+    b.copy_from_slice(a);
+
+    // sort data from B[] into A[]
+    split_merge(b, 0, n, a);
+}
+
+/// Split A[] into 2 runs, sort both runs into B[], merge both runs from B[] to A[]
+/// iBegin is inclusive; iEnd is exclusive (A[iEnd] is not in the set).
+fn split_merge<T: Ord + Copy>(b: &mut [T], i_begin: usize, i_end: usize, a: &mut [T]) {
+    // if run size == 1
+    if i_end - i_begin <= 1 {
+        // consider it sorted
         return;
     }
 
-    // Choice of pivot.
-    pivot(a, lo, hi);
+    // split the run longer than 1 item into halves
+    // iMiddle = mid point
+    let i_middle = (i_end + i_begin) / 2;
 
-    // Partition array and get the pivot indices.
-    let (left, right) = partition(a, lo, hi);
+    // recursively sort both runs from array A[] into B[]
+    // sort the left  run
+    split_merge(a, i_begin, i_middle, b);
+    // sort the right run
+    split_merge(a, i_middle, i_end, b);
 
-    // Sort the two partitions.
-    if left > 1 {
-        // Left side of pivot.
-        quick_sort(a, lo, left - 1);
-    }
-    // Right side of pivot.
-    quick_sort(a, right + 1, hi);
+    // merge the resulting runs from array B[] into A[]
+    merge(b, i_begin, i_middle, i_end, a);
 }
 
-/// Median-of-three.
-fn pivot<T: Ord>(a: &mut [T], lo: usize, hi: usize) {
-    let mid = lo + (hi - lo) / 2;
+///  Left source half is A[ iBegin:iMiddle-1].
+/// Right source half is A[iMiddle:iEnd-1   ].
+/// Result is            B[ iBegin:iEnd-1   ].
+fn merge<T: Ord + Copy>(a: &mut [T], i_begin: usize, i_middle: usize, i_end: usize, b: &mut [T]) {
+    let mut i = i_begin;
+    let mut j = i_middle;
 
-    if a[mid] < a[lo] {
-        a.swap(lo, mid);
-    }
-
-    if a[hi] < a[lo] {
-        a.swap(lo, hi);
-    }
-
-    if a[mid] < a[hi] {
-        a.swap(mid, hi);
-    }
-}
-
-/// Divides array into three partitions.
-fn partition<T: Ord>(a: &mut [T], lo: usize, hi: usize) -> (usize, usize) {
-    // Choose the last element as the pivot.
-    let p = hi;
-
-    // Temporary pivot indices.
-    let mut i = lo;
-    let mut j = lo;
-
-    let mut k = hi - 1;
-
-    // mid = a[p];
-    // [lo, i) < mid;
-    // [i, j) == mid;
-    // [j, k] not yet sorted;
-    // [k + 1, hi - 1] > mid;
-    while j <= k {
-        match a[j].cmp(&a[p]) {
-            Ordering::Less => {
-                a.swap(i, j);
-                i += 1;
-                j += 1;
-            }
-            Ordering::Greater => {
-                a.swap(j, k);
-
-                if k == 0 {
-                    break;
-                }
-
-                k -= 1;
-            }
-            Ordering::Equal => {
-                j += 1;
-            }
+    // While there are elements in the left or right runs...
+    for k in i_begin..i_end {
+        // If left run head exists and is <= existing right run head.
+        if i < i_middle && (j >= i_end || a[i] <= a[j]) {
+            b[k] = a[i];
+            i += 1;
+        } else {
+            b[k] = a[j];
+            j += 1;
         }
     }
-
-    // Move the pivot element to the correct pivot position
-    // (between the smaller and larger elements).
-    a.swap(j, p);
-
-    // the pivot indices.
-    (i, j)
 }
 
 #[cfg(test)]
