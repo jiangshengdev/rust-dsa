@@ -1,4 +1,4 @@
-//! # 3-Way QuickSort (Dutch National Flag)
+//! # 3-Way Quick Sort (Dutch National Flag)
 //!
 //! This is adapted from
 //!

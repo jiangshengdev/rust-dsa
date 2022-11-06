@@ -1,4 +1,4 @@
-//! # Merge sort
+//! # Merge Sort
 //!
 //! This is adapted from
 //!
