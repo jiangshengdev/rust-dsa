@@ -105,7 +105,7 @@ fn partition<T: Ord>(a: &mut [T], lo: usize, hi: usize) -> (usize, usize) {
     // (between the smaller and larger elements).
     a.swap(j, p);
 
-    // the pivot indices.
+    // The pivot indices.
     (i, j)
 }
 

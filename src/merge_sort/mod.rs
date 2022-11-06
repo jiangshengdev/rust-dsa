@@ -8,63 +8,63 @@
 //!
 //! <https://github.com/rust-lang/rust/blob/60bd3f96779dbe6bd206dae09395e9af7d580552/library/alloc/src/collections/binary_heap/tests.rs>
 
-/// Sorting the entire array
-fn sort<T: Ord + Copy>(a: &mut [T]) -> &mut [T] {
+/// Sorting the entire array.
+pub fn sort<T: Ord + Copy>(a: &mut [T]) -> &mut [T] {
     let size = a.len();
 
     if size <= 1 {
         return a;
     }
 
-    let mut b = vec![];
-    b.resize(size, a[0]);
+    // One time copy of `a[]` to `b[]`.
+    let mut b = a.to_vec();
+
     merge_sort(a, &mut b, size);
     a
 }
 
-/// Array A[] has the items to sort; array B[] is a work array.
+/// Array `a[]` has the items to sort; array `b[]` is a work array.
 fn merge_sort<T: Ord + Copy>(a: &mut [T], b: &mut [T], n: usize) {
-    // one time copy of A[] to B[]
-    b.copy_from_slice(a);
-
-    // sort data from B[] into A[]
+    // Sort data from `b[]` into `a[]`.
     split_merge(b, 0, n, a);
 }
 
-/// Split A[] into 2 runs, sort both runs into B[], merge both runs from B[] to A[]
-/// iBegin is inclusive; iEnd is exclusive (A[iEnd] is not in the set).
-fn split_merge<T: Ord + Copy>(b: &mut [T], i_begin: usize, i_end: usize, a: &mut [T]) {
-    // if run size == 1
-    if i_end - i_begin <= 1 {
-        // consider it sorted
+/// Split `a[]` into 2 runs, sort both runs into `b[]`, merge both runs from `b[]` to `a[]`.
+///
+/// [begin, end);
+fn split_merge<T: Ord + Copy>(b: &mut [T], begin: usize, end: usize, a: &mut [T]) {
+    // If run size == 1, consider it sorted.
+    if end - begin <= 1 {
         return;
     }
 
-    // split the run longer than 1 item into halves
-    // iMiddle = mid point
-    let i_middle = (i_end + i_begin) / 2;
+    // Split the run longer than 1 item into halves.
+    // middle = mid point;
+    let middle = begin + (end - begin) / 2;
 
-    // recursively sort both runs from array A[] into B[]
-    // sort the left  run
-    split_merge(a, i_begin, i_middle, b);
-    // sort the right run
-    split_merge(a, i_middle, i_end, b);
+    // Recursively sort both runs from array `a[]` into `b[]`.
+    // Sort the left run.
+    split_merge(a, begin, middle, b);
+    // Sort the right run.
+    split_merge(a, middle, end, b);
 
-    // merge the resulting runs from array B[] into A[]
-    merge(b, i_begin, i_middle, i_end, a);
+    // Merge the resulting runs from array `b[]` into `a[]`.
+    merge(b, begin, middle, end, a);
 }
 
-///  Left source half is A[ iBegin:iMiddle-1].
-/// Right source half is A[iMiddle:iEnd-1   ].
-/// Result is            B[ iBegin:iEnd-1   ].
-fn merge<T: Ord + Copy>(a: &mut [T], i_begin: usize, i_middle: usize, i_end: usize, b: &mut [T]) {
-    let mut i = i_begin;
-    let mut j = i_middle;
+/// Left source half is `a[begin, middle - 1]`.
+///
+/// Right source half is `a[middle, end - 1]`.
+///
+/// Result is `b[begin, end - 1]`.
+fn merge<T: Ord + Copy>(a: &mut [T], begin: usize, middle: usize, end: usize, b: &mut [T]) {
+    let mut i = begin;
+    let mut j = middle;
 
     // While there are elements in the left or right runs...
-    for k in i_begin..i_end {
+    for k in begin..end {
         // If left run head exists and is <= existing right run head.
-        if i < i_middle && (j >= i_end || a[i] <= a[j]) {
+        if i < middle && (j >= end || a[i] <= a[j]) {
             b[k] = a[i];
             i += 1;
         } else {
