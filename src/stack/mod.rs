@@ -6,8 +6,8 @@
 //!
 //! <https://github.com/rust-lang/rust/blob/cb9467515b5a9b15aaa905683c6b4dd9e851056c/library/alloc/src/collections/linked_list.rs>
 
-#[derive(Debug)]
 /// A stack implemented with a linked list.
+#[derive(Debug)]
 pub struct Stack<T> {
     head: Link<T>,
 }
@@ -73,7 +73,8 @@ impl<T> Stack<T> {
         match head {
             None => None,
             Some(boxed_node) => {
-                let elem = &boxed_node.elem;
+                let node = &**boxed_node;
+                let elem = &node.elem;
                 Some(elem)
             }
         }
@@ -87,10 +88,27 @@ impl<T> Stack<T> {
         match head {
             None => None,
             Some(boxed_node) => {
-                let elem = &mut boxed_node.elem;
+                let node = &mut **boxed_node;
+                let elem = &mut node.elem;
                 Some(elem)
             }
         }
+    }
+
+    /// Provides a forward iterator.
+    #[inline]
+    pub fn iter(&self) -> Iter<T> {
+        let head: &Link<T> = &self.head;
+
+        let next = match head {
+            None => None,
+            Some(boxed_node) => {
+                let node = &**boxed_node;
+                Some(node)
+            }
+        };
+
+        Iter { next }
     }
 }
 
@@ -123,54 +141,41 @@ impl<T> IntoIterator for Stack<T> {
     type IntoIter = IntoIter<T>;
 
     /// Consumes the stack into an iterator yielding elements by value.
+    #[inline]
     fn into_iter(self) -> Self::IntoIter {
         IntoIter { stack: self }
     }
 }
 
+/// An iterator over the elements of a [`Stack`].
 pub struct Iter<'a, T> {
     next: Option<&'a Node<T>>,
-}
-
-impl<T> Stack<T> {
-    pub fn iter(&self) -> Iter<T> {
-        let head: &Link<T> = &self.head;
-
-        let next = match head {
-            Some(boxed_node) => {
-                let node = &**boxed_node;
-                Some(node)
-            }
-            None => None,
-        };
-
-        Iter { next }
-    }
 }
 
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
 
+    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         let old_next = self.next;
 
         match old_next {
+            None => None,
             Some(old_node) => {
                 let next_next: &Link<T> = &old_node.next;
 
                 let new_next = match next_next {
+                    None => None,
                     Some(boxed_node) => {
                         let new_node = &**boxed_node;
                         Some(new_node)
                     }
-                    None => None,
                 };
 
                 self.next = new_next;
                 let elem = &old_node.elem;
                 Some(elem)
             }
-            None => None,
         }
     }
 }
