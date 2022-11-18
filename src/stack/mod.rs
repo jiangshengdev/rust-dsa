@@ -110,6 +110,22 @@ impl<T> Stack<T> {
 
         Iter { next }
     }
+
+    /// Provides a forward iterator with mutable references.
+    #[inline]
+    pub fn iter_mut(&mut self) -> IterMut<T> {
+        let head: &mut Link<T> = &mut self.head;
+
+        let next = match head {
+            None => None,
+            Some(boxed_node) => {
+                let node = &mut **boxed_node;
+                Some(node)
+            }
+        };
+
+        IterMut { next }
+    }
 }
 
 impl<T> Drop for Stack<T> {
@@ -174,6 +190,39 @@ impl<'a, T> Iterator for Iter<'a, T> {
 
                 self.next = new_next;
                 let elem = &old_node.elem;
+                Some(elem)
+            }
+        }
+    }
+}
+
+/// A mutable iterator over the elements of a [`Stack`].
+pub struct IterMut<'a, T> {
+    next: Option<&'a mut Node<T>>,
+}
+
+impl<'a, T> Iterator for IterMut<'a, T> {
+    type Item = &'a mut T;
+
+    #[inline]
+    fn next(&mut self) -> Option<Self::Item> {
+        let old_head = self.next.take();
+
+        match old_head {
+            None => None,
+            Some(old_node) => {
+                let next_next: &mut Link<T> = &mut old_node.next;
+
+                let new_next = match next_next {
+                    None => None,
+                    Some(boxed_node) => {
+                        let new_node = &mut **boxed_node;
+                        Some(new_node)
+                    }
+                };
+
+                self.next = new_next;
+                let elem = &mut old_node.elem;
                 Some(elem)
             }
         }
@@ -261,5 +310,18 @@ mod tests {
         assert_eq!(iter.next(), Some(&3));
         assert_eq!(iter.next(), Some(&2));
         assert_eq!(iter.next(), Some(&1));
+    }
+
+    #[test]
+    fn test_iter_mut() {
+        let mut stack = Stack::new();
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+
+        let mut iter = stack.iter_mut();
+        assert_eq!(iter.next(), Some(&mut 3));
+        assert_eq!(iter.next(), Some(&mut 2));
+        assert_eq!(iter.next(), Some(&mut 1));
     }
 }
