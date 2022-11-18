@@ -134,7 +134,9 @@ pub struct Iter<'a, T> {
 
 impl<T> Stack<T> {
     pub fn iter(&self) -> Iter<T> {
-        let head = match &self.head {
+        let head: &Link<T> = &self.head;
+
+        let next = match head {
             Some(boxed_node) => {
                 let node = &**boxed_node;
                 Some(node)
@@ -142,25 +144,30 @@ impl<T> Stack<T> {
             None => None,
         };
 
-        Iter { next: head }
+        Iter { next }
     }
 }
 
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
+
     fn next(&mut self) -> Option<Self::Item> {
-        match self.next {
-            Some(next) => {
-                let next_next = match &next.next {
+        let old_next = self.next;
+
+        match old_next {
+            Some(old_node) => {
+                let next_next: &Link<T> = &old_node.next;
+
+                let new_next = match next_next {
                     Some(boxed_node) => {
-                        let node = &**boxed_node;
-                        Some(node)
+                        let new_node = &**boxed_node;
+                        Some(new_node)
                     }
                     None => None,
                 };
 
-                self.next = next_next;
-                let elem = &next.elem;
+                self.next = new_next;
+                let elem = &old_node.elem;
                 Some(elem)
             }
             None => None,
