@@ -206,9 +206,9 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
-        let old_head = self.next.take();
+        let old_next = self.next.take();
 
-        match old_head {
+        match old_next {
             None => None,
             Some(old_node) => {
                 let next_next: &mut Link<T> = &mut old_node.next;
